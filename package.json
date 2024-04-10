@@ -1,0 +1,24 @@
+{
+  "name": "masoeditor",
+  "version": "1.0.0",
+  "description": "please stop.. stop hitting those keayboard",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bobby-Anggunawan/masoEditor.git"
+  },
+  "keywords": [
+    "wysiwyg",
+    "html",
+    "editor"
+  ],
+  "author": "\"whiletruewar (http://whiletruewar.com/)",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/Bobby-Anggunawan/masoEditor/issues"
+  },
+  "homepage": "https://github.com/Bobby-Anggunawan/masoEditor#readme"
+}
