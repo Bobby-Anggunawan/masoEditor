@@ -1,0 +1,9 @@
+Modular Section editor
+
+-editor type
+    -section: kayak yang mau aku buat untuk wtw
+    -field: cuma 1 textfield normal
+-toolbar type
+    -lines
+        https://i.ytimg.com/vi/qcczXP3qrQw/maxresdefault.jpg
+    -table
