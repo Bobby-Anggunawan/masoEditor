@@ -1,5 +1,7 @@
 //https://www.dofactory.com/javascript/design-patterns/builder
 
+var belumApplyCss = true;
+
 function masoEditor() {
 
     this.buildedEditor = null;  // editor yang akan di masukkan ke html
@@ -52,6 +54,15 @@ function masoEditor() {
         this.editor.id = id;
         this.editor.name = name;
 
+        //start-disini apply semua css yang kubuat
+        if(belumApplyCss){
+
+            setCss(`.masoEditorEditor p:empty:not(:focus)::before { color: grey; content: "Type something..";}`);
+
+            belumApplyCss = false;
+        }
+        //end---disini apply semua css yang kubuat
+
         switch(this.editor.editorType) {
             case "section":
                 this.buildedEditor = this.generateEditorSection();
@@ -98,7 +109,67 @@ function masoEditor() {
         return editor;
     }
     this.generateEditorSection = function (){
-        throw "generateEditorSection belum diimplementasikan";
+
+        // container editor
+        var temp = document.createElement("div");
+
+        var editor = document.createElement("div");
+        editor.classList.add("masoEditorEditor");
+        editor.setAttribute("contenteditable", true);
+        editor.id = `${this.editor.id}_masoEditorEditor`;
+
+        //===============================
+        var dialogParagraph = masoDialog();
+
+        var dialogParagraphContent = document.createElement("div");
+        var dialogParagraphContentTitle = document.createElement("label");
+        dialogParagraphContentTitle.innerText = "Title Paragraph:";
+        dialogParagraphContentTitleInput = document.createElement("input");
+        dialogParagraphContentTitleInput.setAttribute("type", "text");
+        dialogParagraphContentTitleInput.id = "masoDialogParagraphContentTitleInput";
+        dialogParagraphContentTitle.appendChild(dialogParagraphContentTitleInput);
+        dialogParagraphContent.appendChild(dialogParagraphContentTitle);
+
+        var dialogParagraphAction = document.createElement("button");
+        dialogParagraphAction.innerText = "Add";
+        var buildIdInsert = this.editor.id+"_masoEditorEditor"; // letak disini karena kalau di dalam onclick nanti dia gak tahu this.editor.id
+        dialogParagraphAction.onclick = function(e){
+
+            var createdHeading = document.createElement("h2");
+            createdHeading.innerText = document.getElementById("masoDialogParagraphContentTitleInput").value;
+
+            var createdSection = document.createElement("section");
+            createdSection.appendChild(createdHeading);
+            var placeholderp = document.createElement("p");
+            createdSection.appendChild(placeholderp);
+
+            document.getElementById(buildIdInsert).appendChild(
+                createdSection
+            );
+
+            document.getElementById("masoDialog").close();
+        }
+
+        dialogParagraph.setContent(dialogParagraphContent);
+        dialogParagraph.addAction(dialogParagraphAction);
+        //===============================
+
+        var addSection = document.createElement("div");
+        addSection.classList.add("masoEditorAddSection");
+        addSection.id = `${this.editor.id}_masoEditorAddSection`;
+
+        var btnAddParagraph = document.createElement("button");
+        btnAddParagraph.innerText = "+ Paragraph";
+        btnAddParagraph.onclick = function(e){
+            dialogParagraph.show();
+        }
+
+        addSection.appendChild(btnAddParagraph);
+
+        temp.appendChild(editor);
+        temp.appendChild(addSection);
+
+        return temp;
     }
     //end---editor generator====================================================================================================
     
@@ -236,5 +307,72 @@ function masoEditor() {
     return this;
 
 }
-  
+
+// disini aku hanya punya 1 dialog saja dengan id masoDialog.
+// jadi kalau muncul dialog pasti id-nya masoDialog
+function masoDialog(){
+
+    this.content = document.createElement("div");
+    this.actions = [];
+
+    //start-init
+    if(this.actions.length == 0){
+        var myclose = document.createElement("button");
+        myclose.innerText = "Close";
+        myclose.onclick = function(e){
+            document.getElementById("masoDialog").close();
+        }
+        actions.push(myclose);
+    }
+    //end---init
+
+    // buat pakai document.createElement()
+    this.setContent = function (content) {
+        this.content = content;
+    };
+    // buat pakai document.createElement()
+    this.addAction = function (action) {
+        this.actions.push(action);
+    };
+
+    this.show = function (
+        marginBetweenButton = "10px"
+    ){
+
+        if (document.contains(document.getElementById("masoDialog"))) {
+            document.getElementById("masoDialog").remove();
+        }
+
+        var dialog = document.createElement("dialog");
+        dialog.setAttribute("open", true);
+        dialog.id = "masoDialog";
+        dialog.appendChild(this.content);
+
+        dialog.appendChild(document.createElement("hr"));
+
+        this.actions.forEach(function(element){
+            element.setAttribute("style", `margin-right: ${marginBetweenButton};`);
+            dialog.appendChild(element);
+
+        })
+
+        document.getElementsByTagName('body')[0].appendChild(dialog);
+    }
+    return this;
+}
+
+function setCss(cssString){
+
+    var stylePertama = document.getElementsByTagName("style");
+    if(stylePertama.length == 0){
+        // buat dan masukkan tag style
+        var styleSheet = document.createElement("style");
+        styleSheet.innerHTML = cssString;
+        document.head.appendChild(styleSheet)
+    }
+    else{
+        stylePertama[0].innerHTML += cssString;
+    }
+}
+
 //module.exports = masoEditor
